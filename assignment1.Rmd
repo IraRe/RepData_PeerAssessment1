@@ -1,0 +1,23 @@
+---
+title: "Assignment 1"
+author: "Iryna Feuerstein"
+date: "4 März 2017"
+output: html_document
+---
+
+# Loading and preprocessing the data
+
+```{r}
+unzip("activity.zip")
+activity_data <- read.csv("activity.csv")
+summary(activity_data)
+```
+
+# What is the mean total number of steps taken per day?
+
+## Calculating the total number of steps taken per day
+
+```{r}
+sum(activity_data$steps, na.rm = TRUE)
+```
+
