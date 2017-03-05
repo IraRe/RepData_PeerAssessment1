@@ -1,7 +1,7 @@
 ---
 title: "Assignment 1"
 author: "Iryna Feuerstein"
-date: "4 März 2017"
+date: "5th of March, 2017"
 output: html_document
 ---
 
@@ -15,9 +15,75 @@ summary(activity_data)
 
 # What is the mean total number of steps taken per day?
 
-## Calculating the total number of steps taken per day
+### Calculating the total number of steps taken per day
 
 ```{r}
-sum(activity_data$steps, na.rm = TRUE)
+steps_per_day <- tapply(activity_data$steps, activity_data$date, FUN = sum, na.rm=TRUE)
 ```
+
+### Histogramm of the total number of steps taken each day
+
+```{r}
+hist(steps_per_day)
+```
+
+### Calculating the mean and median of the total number of steps taken per day
+
+```{r}
+mean(steps_per_day)
+median(steps_per_day)
+```
+
+# What is the average daily activity pattern?
+
+### Time series plot of the 5-minute interval and the average number of steps taken, averaged across all days 
+
+```{r}
+avg_steps_per_interval <- tapply(activity_data$steps, activity_data$interval, FUN = mean, na.rm=TRUE)
+plot(avg_steps_per_interval, type = "l", xlab = "Intervals", ylab = "Avarage number of steps")
+```
+
+### Which 5-minute interval, on average across all the days in the dataset, contains the maximum number of steps?
+```{r}
+max_index <- which.max(avg_steps_per_interval)
+avg_steps_per_interval[max_index]
+```
+
+# Imputing missing values
+
+### Total number of missing values in the dataset
+```{r}
+summary(is.na(activity_data))
+sum(is.na(activity_data$steps))
+```
+
+### Filling in missing values in the dataset
+```{r}
+filled_activity <- data.frame(activity_data)
+filled_activity$steps <- ifelse(is.na(filled_activity$steps), avg_steps_per_interval[as.character(filled_activity$interval)], filled_activity$steps)
+
+```
+
+### Histogram of the total number of steps taken each day after filling in the missing data.
+```{r}
+filled_steps_per_day <- tapply(filled_activity$steps, filled_activity$date, FUN = sum)
+hist(filled_steps_per_day)
+```
+
+### Mean and median total number of steps taken per day after filling in the missing data.
+```{r}
+mean(filled_steps_per_day)
+median(filled_steps_per_day)
+```
+
+# Are there differences in activity patterns between weekdays and weekends?
+
+
+
+
+
+
+
+
+
 
