@@ -99,14 +99,12 @@ summary(is.na(activity_data))
 ```
 
 ```r
-sum(is.na(activity_data$steps))
+missing_values_amount <- sum(is.na(activity_data$steps))
 ```
-
-```
-## [1] 2304
-```
+There are 2304 missing values in the dataset.
 
 ### Filling in missing values in the dataset
+For filling in the missing values the mean for that 5-minute interval is used.
 
 ```r
 filled_activity <- data.frame(activity_data)
@@ -141,3 +139,28 @@ median(filled_steps_per_day)
 ```
 
 # Are there differences in activity patterns between weekdays and weekends?
+
+### Creating a new factor variable in the dataset with two levels – “weekday” and “weekend” indicating whether a given date is a weekday or weekend day.
+
+```r
+filled_activity$weekday_type <- "weekday"
+filled_activity$date <- as.Date(activity_data$date)
+activity_weekdays <- weekdays(filled_activity$date)
+filled_activity$weekday_type <- ifelse(activity_weekdays == "Samstag" | activity_weekdays == "Sonntag", "weekend", "weekday")
+```
+
+### A panel plot containing a time series plot of the 5-minute interval and the average number of steps taken, averaged across all weekday days and weekend days.
+
+```r
+activity_on_weekday <- subset(filled_activity, filled_activity$weekday_type=="weekday")
+activity_on_weekend <- subset(filled_activity, filled_activity$weekday_type=="weekend")
+avg_steps_per_interval_on_weekday <- tapply(activity_on_weekday$steps, activity_on_weekday$interval, FUN = mean)
+avg_steps_per_interval_on_weekend <- tapply(activity_on_weekend$steps, activity_on_weekend$interval, FUN = mean)
+par(mfrow=c(2,1)) 
+plot(avg_steps_per_interval_on_weekday, type = "l", xlab = "Intervals", ylab = "Avarage number of steps", main = "On weekdays")
+plot(avg_steps_per_interval_on_weekend, type = "l", xlab = "Intervals", ylab = "Avarage number of steps", main = "On weekend")
+```
+
+![](PA1_template_files/figure-html/unnamed-chunk-12-1.png)<!-- -->
+
+
